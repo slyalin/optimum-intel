@@ -260,6 +260,7 @@ def main_export(
         framework=framework,
         device=device,
         library_name=library_name,
+        torch_dtype=torch.float16,
         **loading_kwargs,
     )
 

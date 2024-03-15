@@ -318,6 +318,7 @@ def export_pytorch(
             input_shapes = {}  # will use the defaults from DEFAULT_DUMMY_SHAPES
 
         # Check that inputs match, and order them properly
+        config.float_dtype="fp16"
         dummy_inputs = config.generate_dummy_inputs(framework="pt", **input_shapes)
         device = torch.device(device)
         if device.type == "cuda" and torch.cuda.is_available():
@@ -398,7 +399,7 @@ def export_pytorch(
             for dim in dims:
                 static_shape[dim] = -1
             inp_tensor.get_node().set_partial_shape(static_shape)
-            inp_tensor.get_node().set_element_type(get_element_type(inp_data.cpu().numpy().dtype))
+            inp_tensor.get_node().set_element_type(Type.bf16 if inp_data.dtype == torch.bfloat16 else get_element_type(inp_data.cpu().numpy().dtype))
         ov_model.validate_nodes_and_infer_types()
 
         if stateful:
